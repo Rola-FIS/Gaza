@@ -1,0 +1,73 @@
+/* styles.css */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+body{
+    font-family: "Montserrat", sans-serif;
+  overflow-x: hidden ;
+}
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.ant-drawer {
+  animation: slideIn 0.3s ease-out;
+}
+
+.ant-drawer-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+a {
+  text-decoration: none;
+}
+.writing-mode-vertical-lr {
+  writing-mode: vertical-lr;
+  transform: rotate(360deg);
+    margin-top: 1rem;
+}
+
+.tajawal-extralight {
+      font-family: "Montserrat", sans-serif;
+  font-weight: 200;
+  font-style: normal;
+}
+
+.tajawal-light {
+      font-family: "Montserrat", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.tajawal-regular {
+      font-family: "Montserrat", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.tajawal-medium {
+      font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.tajawal-bold {
+      font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.tajawal-extrabold {
+      font-family: "Montserrat", sans-serif;
+  font-weight: 800;
+  font-style: normal;
+}
+
+.tajawal-black {
+      font-family: "Montserrat", sans-serif;
+  font-weight: 900;
+  font-style: normal;
+}

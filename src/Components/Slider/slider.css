@@ -1,0 +1,44 @@
+/* slider.css */
+
+.slider {
+    position: relative;
+    perspective: 1000px;
+}
+
+.slide {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    transition: transform 0.5s ease;
+}
+
+.slick-current .slide {
+    transform: rotateY(0deg);
+}
+
+.slick-prev .slide,
+.slick-next .slide {
+    transform: rotateY(-15deg);
+}
+
+.content-container {
+    background: rgba(0, 0, 0, 0.5);
+    padding: 2rem;
+    border-radius: 0.5rem;
+    text-align: center;
+    transform: translateZ(100px);
+}
+
+.slide-title {
+    font-size: 2.5rem;
+    color: white;
+    margin-bottom: 1rem;
+}
+
+.slide-description {
+    font-size: 1.25rem;
+    color: white;
+}
