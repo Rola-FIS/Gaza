@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Menu, Dropdown, Drawer, Button } from 'antd';
 import { MenuOutlined, GlobalOutlined } from '@ant-design/icons';
+import {Link} from "react-router-dom";
 
 const Header = () => {
     const [visible, setVisible] = useState(false);
@@ -9,12 +10,12 @@ const Header = () => {
     const onClose = () => setVisible(false);
 
     const menuItems = [
-        { key: 'home', label: 'Home' },
-        { key: 'programs', label: 'The Sole Survivor' },
-        { key: 'water', label: 'Food Program' },
-        { key: 'stories', label: 'Water Supply' },
-        { key: 'stories', label: 'Family Care' },
-        { key: 'stories', label: 'War Victim Care' },
+        { key: 'home', label: 'Home', },
+        { key: '/sole-survivor-programs', label: 'The Sole Survivor'},
+        { key: '/food-programs', label: 'Food Program'},
+        { key: '/water-programs', label: 'Water Supply' },
+        { key: '/family-care', label: 'Family Care' },
+        { key: '/war-victim-care', label: 'War Victim Care' },
     ];
 
     const languageMenu = (
@@ -29,15 +30,18 @@ const Header = () => {
         <header className="fixed w-full z-30  bg-white shadow-lg flex justify-between items-center px-6 md:px-32 h-16">
 
             {/* Logo */}
-            <div className=" text-2xl font-bold text-orange-300">
-                LOGO
-            </div>
+                <Link to={'/home'}>
+                    <div className=" text-2xl font-bold text-orange-300">
+
+                    LOGO
+                    </div>
+                </Link>
             {/* Desktop Menu */}
             <nav className="hidden md:flex  gap-4">
                 {menuItems.map(item => (
-                    <a key={item.key} href={`${item.key}`} className="font-semibold items-center text-gray-700 hover:text-orange-300 transition-colors">
+                    <Link key={item.key} to={`${item.key}`} className="font-semibold items-center text-gray-700 hover:text-orange-300 transition-colors">
                         {item.label}
-                    </a>
+                    </Link>
                 ))}
             </nav>
 

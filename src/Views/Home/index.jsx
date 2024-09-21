@@ -1,195 +1,157 @@
-import SliderSection from "../../Components/Slider/index";
-import React from "react";
+import React, { useEffect, useState, useContext } from 'react';
 import CoverStory from "../../assets/images/war12.webp"
-import Program2 from "../../assets/images/war10.jpg"
-import Program3 from "../../assets/images/war11.jpg"
+
 import {Button, Card, Divider} from "antd";
 import './style.css'
 import Masonry, {ResponsiveMasonry} from "react-responsive-masonry";
-import ContentSlider from "./swiper";
+import {getHomePageDetails} from "../../Service/api";
+import {LoadingContext} from "../../Context";
+import LoadingSpinner from "../../Components/Loading/index.jsx";
+import {baseURL} from "../../Service/axios";
+import {useNavigate} from "react-router-dom";
 export default function Home(){
+    const [data, setData] = useState()
+    const [error, setError] = useState()
+    const { isLoading, setLoading } = useContext(LoadingContext);
+    const navigate = useNavigate()
+    const getData = async () =>{
+        setLoading(true);
 
+        try{
+            const res = await getHomePageDetails()
+            if(res.data){
+                setData(res.data?.message)
+            }
+
+        }catch (err) {
+            setError(err.message || err.response.message)
+            console.log(err,'e')
+        } finally {
+            setLoading(false);
+        }
+    }
+    useEffect(()=>{
+        getData();
+    },[])
+    if (isLoading) return <LoadingSpinner />;
+    if (error) return (
+        <div className='font-bold flex flex-col gap-4 text-center mt-16 text-red-500'>
+            <p>something went wrong !!
+            check your connection and try again
+            </p>
+            <p>{error}</p>
+        </div>
+    );
+    console.log(data,'data')
     return(
-        <div>
-            {/*<div className='flex w-full gap-4'>*/}
-            {/*    <div>*/}
-            {/*        <h4>الناجي الوحيد </h4>*/}
-            {/*        <Card hoverable bordered={false} size='small'*/}
-            {/*              // style={{ width:  320, height:320 }}*/}
-            {/*              cover={<img alt="" src={CoverStory} />}*/}
-            {/*        >*/}
-            {/*            <h4>قصة</h4>*/}
-            {/*            <p>Description</p>*/}
-            {/*        </Card>*/}
-            {/*    </div>*/}
-            {/*   <div className='flex flex-col gap-2'>*/}
-            {/*       <Card hoverable bordered={false} size='small'*/}
-            {/*             // style={{ width:  320, height:320 }}*/}
-            {/*             cover={<img alt="" src={CoverStory} />}*/}
-            {/*       >*/}
-            {/*           <h4>قصة</h4>*/}
-            {/*           <p>Description</p>*/}
-            {/*       </Card>*/}
-            {/*       <Card hoverable bordered={false} size='small'*/}
-            {/*             // style={{ width:  320, height:320 }}*/}
-            {/*             cover={<img alt="" src={CoverStory} />}*/}
-            {/*       >*/}
-            {/*           <h4>قصة</h4>*/}
-            {/*           <p>Description</p>*/}
-            {/*       </Card>*/}
-            {/*   </div>*/}
-
-            {/*</div>*/}
-
+        <div className='pb-32'>
             {/*الناجي الوحيد*/}
-            <div className=' img-cover relative h-[550px] w-full'>
-                {/*<img*/}
-                {/*    className="img-cover h-full w-full object-cover"*/}
-                {/*    src={CoverStory}*/}
-                {/*    alt=""*/}
-                {/*/>*/}
-                <div className='absolute right-4 rounded -bottom-16 h-max-content w-80 bg-orange-300 p-4'>
-                    <h3 className=' font-bold'>The Sole Survivor</h3>
+            <div className=' img-cover relative h-[550px] w-full'
+                 style={{ backgroundImage: `url(${baseURL.concat(data?.sole_survivor&& data?.sole_survivor[0]?.intro_image)})` }}
+
+            >
+                <div className='absolute right-4 rounded -bottom-8 h-max-content w-80 bg-orange-300 p-4'>
+                    <h3 className=' font-bold'>{data?.sole_survivor&& data?.sole_survivor[0]?.title}</h3>
                     <p className='leading-relaxed'>
-                        It is very difficult to be a young mother because the war drains all your energy. The fear of losing my daughter in an airstrike paralyzes my nerves.
+                        {data?.sole_survivor&& data?.sole_survivor[0]?.story_description}
+                        {/*It is very difficult to be a young mother because the war drains all your energy. The fear of losing my daughter in an airstrike paralyzes my nerves.*/}
                     </p>
                 </div>
+                {/*<div className='absolute right-4 rounded -bottom-16 h-max-content w-80 bg-orange-300 p-4'>*/}
+                {/*    <h3 className=' font-bold'>The Sole Survivor</h3>*/}
+                {/*    <p className='leading-relaxed'>*/}
+                {/*        It is very difficult to be a young mother because the war drains all your energy. The fear of losing my daughter in an airstrike paralyzes my nerves.*/}
+                {/*    </p>*/}
+                {/*</div>*/}
             </div>
-        {/*        QUICK STATES*/}
+            {/*        QUICK STATES*/}
             <div className='mt-16 p-6'>
                 <h2 className='underline underline-offset-8 text-lg text-gray-700 font-bold'>Quick Statistics</h2>
                 <div className='flex mt-10 gap-8 justify-center'>
                     <Card hoverable bordered size='small' className='flex-0'
-                          style={{ width: 250, height: 100, padding: '10px 15px', borderTop:'3px solid orange' }}>
-                        <h4 className='text-gray-700 font-bold tracking-[1px]'>Number of Martyrs</h4>
-                        <h2 className='font-bold text-orange-700 ml-2 '>40,000</h2>
+                          style={{ width: 250, height: 120, padding: '10px 15px', borderTop:'3px solid orange' }}>
+                        <h4 className='text-gray-700 font-bold tracking-[1px]'>Number of Camps</h4>
+                        <h2 className='font-bold text-red-600 ml-2 '>{data?.statistics && data?.statistics?.number_of_camps || 0}</h2>
                     </Card>
                     <Card hoverable bordered size='small' className='flex-0'
-                          style={{ width: 250, height: 100, padding: '10px 15px', borderTop:'3px solid orange' }}>
-                        <h4 className='text-gray-700 font-bold tracking-[1px]'>Number of Injured</h4>
-                        <h2 className='font-bold text-red-300 ml-2'>65,000</h2>
+                          style={{ width: 250, height: 120, padding: '10px 15px', borderTop:'3px solid orange' }}>
+                        <h4 className='text-gray-700 font-bold tracking-[1px]'>Camps In Palestine</h4>
+                        <h2 className='font-bold text-red-600 ml-2 '>{data?.statistics && data?.statistics?.camps_in_palestine || 0}</h2>
+                    </Card>
+
+                    <Card hoverable bordered size='small' className='flex-0'
+                          style={{ width: 250, height: 120, padding: '10px 15px', borderTop:'3px solid orange' }}>
+                        <h4 className='text-gray-700 font-bold tracking-[1px]'>Number of Refugees</h4>
+                        <h2 className='font-bold text-red-30 ml-2'>{data?.statistics && data?.statistics?.number_of_refugees || 0}</h2>
                     </Card>
                     <Card hoverable bordered size='small' className='flex-0'
-                          style={{ width: 250, height: 100, padding: '10px 15px', borderTop:'3px solid orange' }}>
-                        <h4 className='text-gray-700 font-bold tracking-[1px]'>Age Distribution</h4>
-                        <h2 className='font-bold text-yellow-500 ml-2'>65%</h2>
+                          style={{ width: 250, height: 120, padding: '10px 15px', borderTop:'3px solid orange' }}>
+                        <h4 className='text-gray-700 font-bold tracking-[1px]'>Refugees In Palestine</h4>
+                        <h2 className='font-bold text-red-500 ml-2'>{data?.statistics && data?.statistics?.refugees_in_palestine || 0}</h2>
                     </Card>
                     <Card hoverable bordered size='small' className='flex-0'
-                          style={{ width: 250, height: 100, padding: '10px 15px', borderTop:'3px solid orange' }}>
-                        <h4 className='text-gray-700 font-bold tracking-[1px]'>Number of Martyrs</h4>
-                        <h2 className='font-bold text-blue-500 ml-2'>122,000</h2>
+                          style={{ width: 250, height: 120, padding: '10px 15px', borderTop:'3px solid orange' }}>
+                        <h4 className='text-gray-700 font-bold tracking-[1px]'>Refugees out of Palestine</h4>
+                        <h2 className='font-bold text-red-400 ml-2'>{data?.statistics && data?.statistics?.refugees_out_of_palestine || 0}</h2>
                     </Card>
                 </div>
             </div>
 
-            <div className='mt-16 p-6'>
+            <div className='mt-10 p-6'>
                 <h2 className='underline underline-offset-8 text-lg text-gray-700 font-bold '>Stories You Should See</h2>
                 <div className='flex justify-between mt-5'>
                     <p className='text-gray-600 w-[60%] mb-0 '>
                         Israel is trying to wipe out as many Palestinians as possible. This is genocide
                     </p>
-                    <Button className='bg-orange-300 p-4  text-white font-bold'>View All</Button>
+                    {/*<Button className='bg-orange-300 p-4  text-white font-bold'>View All</Button>*/}
                 </div>
 
-                <ResponsiveMasonry className='mt-5'
-                                   // columns={{ 320: 1, 480: 2, 800: 3 }}
-                                   // breakpoints={{ 350: 2, 750: 3, 900: 4 }}
-                                   columnsCountBreakPoints={{ 350: 1, 750: 2, 900: 3 }}
-                >
-                    <Masonry gutter="16px">
-
-                        <Card
-                            hoverable
-                            bordered
-                            size="small"
-                            className="relative group"
-                            // style={{ width: 420 }}
-                            cover={<img alt="" src={CoverStory} />}
-                        >
-                            <div className="flex flex-col gap-2 ">
-                                {/*<h4>01</h4>*/}
-                                <h4>Nothing is left</h4>
-                                <p className="text-gray-500">
-                                    Israel’s military tells Gaza residents to go home but they find only rubble
-                                </p>
-                                <Button className=" bg-orange-300 p-4  text-white font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300 "
-                                >
-                                    Donate
-                                </Button>
-                                <span className="bg-gray-100 w-max rounded-xl text-gray-500 p-2">
-                                    JULY 15 - 2024
-                                </span>
-                            </div>
-                        </Card>
-                        <Card
-                            hoverable
-                            bordered
-                            size="small"
-                            className="relative group"
-                            // style={{ width: 220 }}
-                            cover={<img alt="" src={CoverStory} />}
-                        >
-                            <div className="flex flex-col gap-2 ">
-                                {/*<h4>01</h4>*/}
-                                <h4>Nothing is left</h4>
-                                <p className="text-gray-500">
-                                    Israel’s military tells Gaza residents to go home but they find only rubble
-                                </p>
-                                <Button className=" bg-orange-300 p-4  text-white font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300 "
-                                >
-                                    Donate
-                                </Button>
-                                <span className="bg-gray-100 w-max rounded-xl text-gray-500 p-2">
-                                    JULY 15 - 2024
-                                </span>
-                            </div>
-                        </Card>
-                        <Card
-                            hoverable
-                            bordered
-                            size="small"
-                            className="relative group"
-                            // style={{ width: 320 }}
-                            cover={<img alt="" src={CoverStory} />}
-                        >
-                            <div className="flex flex-col gap-2 ">
-                                {/*<h4>01</h4>*/}
-                                <h4>Nothing is left</h4>
-                                <p className="text-gray-500">
-                                    Israel’s military tells Gaza residents to go home but they find only rubble
-                                </p>
-                                <Button className=" bg-orange-300 p-4  text-white font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300 "
-                                >
-                                    Donate
-                                </Button>
-                                <span className="bg-gray-100 w-max rounded-xl text-gray-500 p-2">
-                                    JULY 15 - 2024
-                                </span>
-                            </div>
-                        </Card>
-
+                <ResponsiveMasonry className='mt-3 p-6' columnsCountBreakPoints={{ 300: 1, 750: 2, 900: 4 }}>
+                    <Masonry gutter="8px "> {/* Reduced gutter size */}
+                        {data?.latest_stories?.slice(0,8)?.map(row => (
+                            <Card
+                                hoverable
+                                bordered
+                                size="small"
+                                className="relative  group w-full max-w-xs m-1"
+                                style={{height:400}}
+                                cover={<img alt="" src={baseURL.concat(row?.intro_image)} className="object-cover h-48 w-full" />}
+                            >
+                                <div className="flex flex-col  p-4">
+                                    <h4 className="text-lg font-semibold mb-0">{row?.title}</h4>
+                                    <p className="text-gray-500 text-sm">
+                                        {row?.story_description}
+                                    </p>
+                                    <Button
+                                        onClick={()=>navigate(`/${row.slug_type}/${row.name}`)}
+                                        className="bg-orange-300 p-2 text-white font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        Donate
+                                    </Button>
+                                    <span className="w-max rounded-xl text-gray-500 p-2 text-xs">
+                                          {row.published_on}
+                                    </span>
+                                </div>
+                            </Card>
+                        ))}
                     </Masonry>
                 </ResponsiveMasonry>
+
             </div>
 
-            <div className='mt-10   max-h-[620px] ms-5 me-5  '>
+            <div className='mt-6   max-h-[620px] ms-5 me-5  '>
                 <div className='min-h-[420px] flex bg-white rounded-3xl '>
-                    <div className='p-6  w-96 flex flex-col leading-relaxed  justify-center'>
+                    <div className='p-6  w-96 flex flex-col leading-relaxed  '>
                         <h3 className='font-bold'>
-                            Nothing is left: Israel’s military tells Gaza residents to go home but they find only rubble
+                            {data?.sole_survivor && data?.sole_survivor[0]?.title}
                         </h3>
                         <p className=' ' >
-                            One man, Abdulfattah Al Bourdaini, said: “We came home and found nothing, no power, no gas, no house, and we cannot change our clothes.”
-
-                            All he had been able to salvage was a teddy bear for the son he hoped one day to have.
-
-                            “I am penniless like the day I was born,” Al Bourdaini said. “I have nothing. I came to check on my house, didn’t find a house or anything, nothing is left… There is nothing left to cry about.”
+                            {data?.sole_survivor && data?.sole_survivor[0]?.story_description}
                         </p>
 
                     </div>
                     <div className='img-opacity relative flex-1 w-32 items-center rounded-l'>
                         <img
-                            src={CoverStory}
+                            src={baseURL.concat(data?.sole_survivor&& data?.sole_survivor[0]?.intro_image)}
                             alt='Background'
                             className='object-cover w-full h-full '
                         />
@@ -197,107 +159,132 @@ export default function Home(){
                 </div>
                 <div className='flex mt-2  ' >
                     <div className='p-6  w-96 flex flex-col leading-relaxed  '>
-                        {/*Is US economy better or worse now than under Trump?*/}
-                        {/*BBC Verify looks at jobs, inflation, stocks and other indicators to compare the Trump and Biden economies.*/}
 
-                        {/*14 hrs ago*/}
-                        {/*BBC Verify*/}
                     </div>
                     <div className='flex flex-1 w-32 items-center '>
-                        <Card  bordered size='small'
-                               cover={<img alt="" src={CoverStory} />}
-                               className='flex-0 bg-inherit  '
-                               style={{ width: 300, height: 'max-content', padding: '10px 15px', }}>
-                            <div className='flex justify-between items-center'>
-                                <div>
-                                    <p className='text-gray-600 font-bold  underline underline-offset-8 '>The Sole Survivor</p>
-                                    <p className='text-gray-500 text-xs	 '>12 June, 2024</p>
+                        {data?.sole_survivor?.slice(0,4)?.map(row=>
+                            <Card  bordered size='small'
+                                   cover={<img alt=""
+                                               src={baseURL.concat(row?.intro_image)}
+                                   />}
+                                   hoverable
+                                   className='flex-0 bg-inherit  '
+                                   style={{ width: 300, height: 'max-content', padding: '10px 15px', }}>
+                                <div className='flex justify-between items-center'>
+                                    <div>
+                                        <p className='text-gray-600 font-bold  underline underline-offset-8 '>{row?.title}</p>
+                                        <p className='text-gray-500 text-xs	 '>{row.published_on}</p>
+                                    </div>
+                                    {/*<Button className='bg-orange-300 text-white '>View</Button>*/}
                                 </div>
-                                {/*<Button className='bg-orange-300 text-white '>View</Button>*/}
-                            </div>
 
-                        </Card>
-                        <Card hoverable bordered size='small'
-                              cover={<img alt="" src={CoverStory} />}
-                              className='flex-0 bg-inherit '
-                              style={{ width: 300, height: 'max-content', padding: '10px 15px', }}>
-                            <div className='flex justify-between items-center'>
-                                <div>
-                                    <p className='text-gray-600 font-bold underline underline-offset-8 '>The Sole Survivor</p>
-                                    <p className='text-gray-500 text-xs	 '>12 June, 2024</p>
-                                </div>
-                                {/*<Button className='bg-orange-300 text-white'>View</Button>*/}
-                            </div>
+                            </Card>
+                        )}
 
-                        </Card>
-                        <Card  bordered size='small'
-                              cover={<img alt="" src={CoverStory} />}
-                              className='flex-0 bg-inherit '
-                              style={{ width: 300, height: 'max-content', padding: '10px 15px', }}>
-                            <div className='flex justify-between items-center'>
-                                <div>
-                                    <p className='text-gray-600 font-bold  underline underline-offset-8 '>The Sole Survivor</p>
-                                    <p className='text-gray-500 text-xs	 '>12 June, 2024</p>
-                                </div>
-                                {/*<Button className='bg-orange-300 text-white'>View</Button>*/}
-                            </div>
+                        {/*<Card hoverable bordered size='small'*/}
+                        {/*      cover={<img alt="" src={CoverStory} />}*/}
+                        {/*      className='flex-0 bg-inherit '*/}
+                        {/*      style={{ width: 300, height: 'max-content', padding: '10px 15px', }}>*/}
+                        {/*    <div className='flex justify-between items-center'>*/}
+                        {/*        <div>*/}
+                        {/*            <p className='text-gray-600 font-bold underline underline-offset-8 '>The Sole Survivor</p>*/}
+                        {/*            <p className='text-gray-500 text-xs	 '>12 June, 2024</p>*/}
+                        {/*        </div>*/}
+                        {/*        /!*<Button className='bg-orange-300 text-white'>View</Button>*!/*/}
+                        {/*    </div>*/}
 
-                        </Card>
-                        <Card  bordered size='small'
-                              cover={<img alt="" src={CoverStory} />}
-                              className='flex-0 bg-inherit '
-                              style={{ width: 300, height: 'max-content', padding: '10px 15px', }}>
-                            <div className='flex justify-between items-center'>
-                                <div>
-                                    <p className='text-gray-600 font-bold  underline underline-offset-8'>The Sole Survivor</p>
-                                    <p className='text-gray-500 text-xs	 '>12 June, 2024</p>
-                                </div>
-                                {/*<Button className='bg-orange-300 text-white'>View</Button>*/}
-                            </div>
+                        {/*</Card>*/}
+                        {/*<Card  bordered size='small'*/}
+                        {/*       cover={<img alt="" src={CoverStory} />}*/}
+                        {/*       className='flex-0 bg-inherit '*/}
+                        {/*       style={{ width: 300, height: 'max-content', padding: '10px 15px', }}>*/}
+                        {/*    <div className='flex justify-between items-center'>*/}
+                        {/*        <div>*/}
+                        {/*            <p className='text-gray-600 font-bold  underline underline-offset-8 '>The Sole Survivor</p>*/}
+                        {/*            <p className='text-gray-500 text-xs	 '>12 June, 2024</p>*/}
+                        {/*        </div>*/}
+                        {/*        /!*<Button className='bg-orange-300 text-white'>View</Button>*!/*/}
+                        {/*    </div>*/}
 
-                        </Card>
-                     </div>
+                        {/*</Card>*/}
+                        {/*<Card  bordered size='small'*/}
+                        {/*       cover={<img alt="" src={CoverStory} />}*/}
+                        {/*       className='flex-0 bg-inherit '*/}
+                        {/*       style={{ width: 300, height: 'max-content', padding: '10px 15px', }}>*/}
+                        {/*    <div className='flex justify-between items-center'>*/}
+                        {/*        <div>*/}
+                        {/*            <p className='text-gray-600 font-bold  underline underline-offset-8'>The Sole Survivor</p>*/}
+                        {/*            <p className='text-gray-500 text-xs	 '>12 June, 2024</p>*/}
+                        {/*        </div>*/}
+                        {/*        /!*<Button className='bg-orange-300 text-white'>View</Button>*!/*/}
+                        {/*    </div>*/}
+
+                        {/*</Card>*/}
+                    </div>
                 </div>
 
             </div>
-            {/*<div className='mt-16'>*/}
-            {/*    <h2 className='underline underline-offset-8 text-lg text-gray-700 font-bold'>Stories You Should See</h2>*/}
-            {/*    <ContentSlider />*/}
-            {/*</div>*/}
 
-            <div className='mt-16 p-12 mb-32 max-h-max'>
+            <div className='mt-16 pl-10 pt-10 pb-10 pr-0 mb-32 max-h-max'>
                 <h2 className='underline underline-offset-8 text-lg text-gray-700 font-bold flex justify-center'>Family Care</h2>
-                <div className=' flex gap-4 mt-10  min-h-[400px] '>
-                    {/*<ResponsiveMasonry className='mt-5'*/}
-                    {/*    // columns={{ 320: 1, 480: 2, 800: 3 }}*/}
-                    {/*    // breakpoints={{ 350: 2, 750: 3, 900: 4 }}*/}
-                    {/*                   columnsCountBreakPoints={{ 750: 1, 250: 2 }}*/}
-                    {/*>*/}
-                    {/*    <Masonry gutter="16px">*/}
+                <div className=' flex gap-8 mt-10  min-h-[400px] '>
+                    <div className=' flex-1 w-[55%] max-h-[500px] '>
+                        <div className='flex flex-col gap-2  '>
+                            <div className='relative'>
+                                <img alt=""
+                                     src={baseURL.concat(data?.family_care&& data?.family_care[0]?.intro_image)}
+                                     className='rounded w-[100%] object-cover  max-h-[350px]'
+                                />
+                                <h3 className=' ml-auto mr-auto font-bold absolute left-4 bottom-0 text-white'>
+                                    {data?.family_care && data?.family_care[0]?.title}
+                                </h3>
 
-                            <div className=' flex-1 w-[55%] max-h-[500px] '>
-                            <div className='flex flex-col gap-2  '>
+                            </div>
+                            <div>
+                                <p className="text-gray-500">
+                                    {data?.family_care&& data?.family_care[0]?.story_description}
+                                </p>
+                                <div className='flex justify-between items-center'>
+                                 <span className=" w-max rounded-xl text-gray-500 p-1" style={{fontSize:'10px'}}>
+                                    {data?.family_care&& data?.family_care[0]?.published_on}
+                                 </span>
+                                    <Button
+                                        onClick={()=>navigate(`/family-care/${data?.family_care && data?.family_care[0]?.name}`)}
+                                        className='bg-orange-300 w-32 text-white font-bold '
+                                        // className=" bg-orange-300 p-4  text-white font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300 "
+                                    >
+                                        Donate
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div className='flex flex-col w-[25%]   max-h-[400px]'>
+                        <div className='flex flex-col  gap-4 '>
+                            <div className='w-[80%] flex flex-col gap-2  max-h-[400px]'>
                                 <div className='relative'>
-
                                     <img alt=""
-                                         src={CoverStory}
-                                         className='rounded w-[100%] object-cover  max-h-[350px]'
+                                         src={baseURL.concat(data?.family_care&& data?.family_care[1]?.intro_image)}
+                                         className='rounded w-full object-cover    max-h-[200px] '
                                     />
-                                    <h3 className=' ml-auto mr-auto font-bold absolute left-4 bottom-0 text-white'>Family Program 1</h3>
+                                    <h3 className=' ml-auto mr-auto font-bold absolute left-4 bottom-0 text-white'>
+                                        {data?.family_care && data?.family_care[1]?.title}
+                                    </h3>
 
                                 </div>
+
                                 <div>
                                     <p className="text-gray-500">
-                                        Israel’s military tells Gaza residents to go home but they find only rubble
-                                        Israel’s military tells Gaza residents to go home but they find only rubble
-                                        Israel’s military tells Gaza residents to go home but they find only rubble
-                                        Israel’s military tells Gaza residents to go home but they find only rubble
+                                        {data?.family_care && data?.family_care[0]?.story_description}
                                     </p>
-                                    <div className='flex justify-between'>
-                                 <span className=" w-max rounded-xl text-gray-500 p-1" style={{fontSize:'10px'}}>
-                                    JULY 15 - 2024
-                                 </span>
+                                    <div className='flex justify-between items-center'>
+                                            <span className=" w-max rounded-xl text-gray-500 p-1" style={{fontSize:'12px'}}>
+                                                 {data?.family_care && data?.family_care[1]?.published_on}
+                                             </span>
                                         <Button
+                                            onClick={()=>navigate(`/family-care/${data?.family_care && data?.family_care[1]?.name}`)}
+
                                             className='bg-orange-300 w-32 text-white font-bold '
                                             // className=" bg-orange-300 p-4  text-white font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300 "
                                         >
@@ -305,74 +292,41 @@ export default function Home(){
                                         </Button>
                                     </div>
                                 </div>
+
                             </div>
-                            {/*<Button className='float-start text-gray-700 mt-5'*/}
-                            {/*        type=''>View More </Button>*/}
-                        </div>
-                            <div className='flex flex-col w-[25%]   max-h-[400px]'>
-                            <div className='flex flex-col  gap-4 '>
-                                <div className='w-[80%] flex flex-col gap-2  max-h-[400px]'>
-                                    <div className='relative'>
-                                        <img alt=""
-                                             src={Program2}
-                                             className='rounded w-full object-cover    max-h-[200px] '
-                                        />
-                                        <h3 className=' ml-auto mr-auto font-bold absolute left-4 bottom-0 text-white'>Family Program 2</h3>
+                            <div className='w-[80%] flex flex-col gap-2 '>
+                                <div className='relative'>
+                                    <img alt=""
+                                         src={baseURL.concat(data?.family_care&& data?.family_care[2]?.intro_image)}
+                                         className='rounded w-full object-cover  max-h-[200px] '
+                                    />
+                                    <h3 className=' ml-auto mr-auto font-bold absolute left-4 bottom-0 text-white'>
+                                        {data?.family_care && data?.family_care[2]?.title}
+                                    </h3>
 
-                                    </div>
+                                </div>
 
-                                    <div>
-                                        <p className="text-gray-500">
-                                            Israel’s military tells Gaza residents to go home but they find only rubble
-                                        </p>
-                                        <div className='flex justify-between'>
+                                <div>
+                                    <p className="text-gray-500">
+                                        {data?.family_care && data?.family_care[2]?.story_description}
+                                    </p>
+                                    <div className='flex justify-between items-center'>
                                             <span className=" w-max rounded-xl text-gray-500 p-1" style={{fontSize:'12px'}}>
-                                                JULY 15 - 2024
+                                                 {data?.family_care && data?.family_care[2]?.published_on}
                                              </span>
-                                            <Button
-                                                className='bg-orange-300 w-32 text-white font-bold '
-                                                // className=" bg-orange-300 p-4  text-white font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300 "
-                                            >
-                                                Donate
-                                            </Button>
-                                        </div>
-                                </div>
-
-                                </div>
-                                <div className='w-[80%] flex flex-col gap-2 '>
-                                    <div className='relative'>
-                                        <img alt=""
-                                             src={Program3}
-                                             className='rounded w-full object-cover    max-h-[200px] '
-                                        />
-                                        <h3 className=' ml-auto mr-auto font-bold absolute left-4 bottom-0 text-white'>Family Program 3</h3>
-
+                                        <Button
+                                            onClick={()=>navigate(`/family-care/${data?.family_care && data?.family_care[2]?.name}`)}
+                                            className='bg-orange-300 w-32 text-white font-bold '
+                                            // className=" bg-orange-300 p-4  text-white font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300 "
+                                        >
+                                            Donate
+                                        </Button>
                                     </div>
-
-                                    <div>
-                                        <p className="text-gray-500">
-                                            Israel’s military tells Gaza residents to go home but they find only rubble
-                                        </p>
-                                        <div className='flex justify-between'>
-                                            <span className=" w-max rounded-xl text-gray-500 p-1" style={{fontSize:'12px'}}>
-                                                JULY 15 - 2024
-                                             </span>
-                                            <Button
-                                                className='bg-orange-300 w-32 text-white font-bold '
-                                                // className=" bg-orange-300 p-4  text-white font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-300 "
-                                            >
-                                                Donate
-                                            </Button>
-                                        </div>
-                                </div>
-
                                 </div>
 
                             </div>
                         </div>
-
-                    {/*    </Masonry>*/}
-                    {/*</ResponsiveMasonry>*/}
+                    </div>
                 </div>
 
             </div>
@@ -380,55 +334,62 @@ export default function Home(){
                 <Divider style={{backgroundColor:'white'}}/>
                 <h2 className='pl-6 text-white text-lg text-gray-700 font-bold '>War Victim Care</h2>
                 <div className='pl-6 flex gap-4 max-w-full	 overflow-x-auto	'>
-
-                    <Card  size='small'
-                           cover={<img alt="" src={CoverStory} />}
-                           className='flex-0 bg-gray-300  '
-                           style={{ width: 300, height: 'max-content', padding: '10px 15px', }}>
-                        <div className='flex justify-between items-center'>
-                            <div>
-                                <p className='text-gray-600 font-bold  underline underline-offset-8 '>The Sole Survivor</p>
-                                <p className='text-gray-500 text-xs	 '>12 June, 2024</p>
+                    {/*    war_victims_care*/}
+                    {data?.war_victims_care?.slice(0,5)?.map(row=>
+                        <Card hoverable size='small'
+                               cover={<img alt=""
+                                           src={baseURL.concat(row?.intro_image)}
+                               />}
+                                bordered
+                               onClick={()=>navigate(`/war-victims-care/${row.name}`)}
+                               className='flex-0 bg-gray-30'
+                               style={{ width: 300, height: '300' }}>
+                            <div className='flex justify-between items-center'>
+                                <div className=' flex flex-col justify-between'>
+                                    <p className='text-gray-600 font-bold  underline underline-offset-8 '>{row?.title}</p>
+                                    <p className='text-gray-500 text-xs	mb-0 '>{row?.published_on}</p>
+                                </div>
                             </div>
-                        </div>
 
-                    </Card>
-                    <Card  size='small'
-                           cover={<img alt="" src={CoverStory} />}
-                           className='flex-0 bg-gray-300  '
-                           style={{ width: 300, height: 'max-content', padding: '10px 15px', }}>
-                        <div className='flex justify-between items-center'>
-                            <div>
-                                <p className='text-gray-600 font-bold  underline underline-offset-8 '>The Sole Survivor</p>
-                                <p className='text-gray-500 text-xs	 '>12 June, 2024</p>
-                            </div>
-                        </div>
+                        </Card>
+                    )}
 
-                    </Card>
-                    <Card  size='small'
-                           cover={<img alt="" src={CoverStory} />}
-                           className='flex-0 bg-gray-300  '
-                           style={{ width: 300, height: 'max-content', padding: '10px 15px', }}>
-                        <div className='flex justify-between items-center'>
-                            <div>
-                                <p className='text-gray-600 font-bold  underline underline-offset-8 '>The Sole Survivor</p>
-                                <p className='text-gray-500 text-xs	 '>12 June, 2024</p>
-                            </div>
-                        </div>
+                    {/*<Card  size='small'*/}
+                    {/*       cover={<img alt="" src={CoverStory} />}*/}
+                    {/*       className='flex-0 bg-gray-300  '*/}
+                    {/*       style={{ width: 300, height: 'max-content', padding: '10px 15px', }}>*/}
+                    {/*    <div className='flex justify-between items-center'>*/}
+                    {/*        <div>*/}
+                    {/*            <p className='text-gray-600 font-bold  underline underline-offset-8 '>The Sole Survivor</p>*/}
+                    {/*            <p className='text-gray-500 text-xs	 '>12 June, 2024</p>*/}
+                    {/*        </div>*/}
+                    {/*    </div>*/}
 
-                    </Card>
-                    <Card  size='small'
-                           cover={<img alt="" src={CoverStory} />}
-                           className='flex-0 bg-gray-300  '
-                           style={{ width: 300, height: 'max-content', padding: '10px 15px', }}>
-                        <div className='flex justify-between items-center'>
-                            <div>
-                                <p className='text-gray-600 font-bold  underline underline-offset-8 '>The Sole Survivor</p>
-                                <p className='text-gray-500 text-xs	 '>12 June, 2024</p>
-                            </div>
-                        </div>
+                    {/*</Card>*/}
+                    {/*<Card  size='small'*/}
+                    {/*       cover={<img alt="" src={CoverStory} />}*/}
+                    {/*       className='flex-0 bg-gray-300  '*/}
+                    {/*       style={{ width: 300, height: 'max-content', padding: '10px 15px', }}>*/}
+                    {/*    <div className='flex justify-between items-center'>*/}
+                    {/*        <div>*/}
+                    {/*            <p className='text-gray-600 font-bold  underline underline-offset-8 '>The Sole Survivor</p>*/}
+                    {/*            <p className='text-gray-500 text-xs	 '>12 June, 2024</p>*/}
+                    {/*        </div>*/}
+                    {/*    </div>*/}
 
-                    </Card>
+                    {/*</Card>*/}
+                    {/*<Card  size='small'*/}
+                    {/*       cover={<img alt="" src={CoverStory} />}*/}
+                    {/*       className='flex-0 bg-gray-300  '*/}
+                    {/*       style={{ width: 300, height: 'max-content', padding: '10px 15px', }}>*/}
+                    {/*    <div className='flex justify-between items-center'>*/}
+                    {/*        <div>*/}
+                    {/*            <p className='text-gray-600 font-bold  underline underline-offset-8 '>The Sole Survivor</p>*/}
+                    {/*            <p className='text-gray-500 text-xs	 '>12 June, 2024</p>*/}
+                    {/*        </div>*/}
+                    {/*    </div>*/}
+
+                    {/*</Card>*/}
                 </div>
                 <Divider style={{backgroundColor:'white'}}/>
 
@@ -437,18 +398,17 @@ export default function Home(){
                 <h2 className='underline underline-offset-8 text-lg text-gray-700 font-bold flex '>Food Program</h2>
                 <div className='flex gap-6 mt-10 pl-10 pr-10'>
                     <img alt=""
-                         src={Program2}
+                         src={baseURL.concat(data?.food_program&& data?.food_program[0]?.intro_image)}
                          className='rounded w-full  object-cover object-center flex-1 max-h-[500px]	 '
                     />
-                    <div className='flex   mt-16 flex-col gap-4	'>
+                    <div className='flex    flex-col gap-4	'>
                         <h3 className='font-semibold'>
-                            Lorem Ipsum Lorem Ipsum
+                            {data?.food_program&& data?.food_program[0]?.title}
                         </h3>
                         <p className='w-96 tracking-[2px] text-xs'>
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                            Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
+                            {data?.food_program&& data?.food_program[0]?.story_description}
                         </p>
-                        <Button className='w-32 mt-8'>
+                        <Button className='w-32 mt-8' onClick={()=>navigate('/food-programs')}>
                             See More
                         </Button>
                     </div>
@@ -458,20 +418,21 @@ export default function Home(){
             <section className='mt-16 pl-6 pr-6 '>
                 <h2 className='underline underline-offset-8 text-lg text-gray-700 font-bold flex  '>Water Supply</h2>
                 <div className='flex gap-6 mt-10 pl-10 pr-10'>
-                    <div className='flex   mt-16 flex-col gap-4	'>
+                    <div className='flex    flex-col gap-4	'>
                         <h3 className='font-semibold'>
-                            Lorem Ipsum Lorem Ipsum
+                            {data?.water_program
+                            && data?.water_program[0]?.title}
                         </h3>
                         <p className='w-96 tracking-[2px] text-xs'>
-                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-                            Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
+                            {data?.water_program
+                            && data?.water_program[0]?.story_description}
                         </p>
-                        <Button className='w-32 mt-8'>
+                        <Button className='w-32 mt-8'  onClick={()=>navigate('/water-programs')}>
                             See More
                         </Button>
                     </div>
                     <img alt=""
-                         src={Program3}
+                         src={baseURL.concat(data?.water_program&& data?.water_program[0]?.intro_image)}
                          className='rounded w-full  object-cover object-center flex-1 max-h-[500px]	 '
                     />
 

@@ -11,6 +11,7 @@ import { useTranslation, initReactI18next } from "react-i18next";
 
 import en from "./assets/lang/en.json";
 import ar from "./assets/lang/ar.json";
+import {LoadingProvider} from "./Context";
 i18n.use(initReactI18next).init({
     resources: {
         en: {
@@ -45,12 +46,15 @@ function App() {
     <BrowserRouter>
         <Suspense fallback={<Loading />}>
             <ConfigProvider direction={i18n.dir()}>
-                <div dir={i18n.dir()}>
-                    {/*<ToastContainer limit={1} />*/}
+                <LoadingProvider>
+                    <div dir={i18n.dir()}>
+                        {/*<ToastContainer limit={1} />*/}
 
-                    <Routes>{renderRoutes(routes)}</Routes>
+                        <Routes>{renderRoutes(routes)}</Routes>
 
-                </div>
+                    </div>
+                </LoadingProvider>
+
             </ConfigProvider>
         </Suspense>
     </BrowserRouter>

@@ -1,13 +1,8 @@
 .img-cover{
-    background-image: url("../../assets/images/war11.jpg");
-    /*height: max-content;*/
-    /*min-height: 500px;*/
     background-repeat: no-repeat;
-    background-size: 100%;
-    background-attachment: fixed;
+    background-size: cover; /* Change to cover for better scaling */
+    /*background-attachment: fixed;*/
     background-position: center;
-    object-fit: contain;
-
 }
 /* styles.css */
 
@@ -23,7 +18,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(to right, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3));
+    background: linear-gradient(to right, rgba(189, 165, 165, 0.5), rgba(250, 247, 247, 0.3));
     z-index: 1;
 }
 

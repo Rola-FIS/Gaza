@@ -71,3 +71,7 @@ a {
   font-weight: 900;
   font-style: normal;
 }
+/* src/components/LoadingSpinner.css */
+.custom-spinner .ant-spin-dot {
+    color: #203b51e0; /* Custom color for the spinner */
+}

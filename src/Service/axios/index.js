@@ -1,14 +1,15 @@
 import axios from "axios";
 
-const baseURI ='http://18.116.136.181'
+export const baseURL = 'http://18.116.136.181';
 
 const Axios = axios.create({
-    baseURI
+    baseURL
 })
-
+console.log(baseURL ,'baseURI')
 Axios.interceptors.request.use(
     (config)=>{
         config.headers['Access-Control-Allow-Origin'] = '*';
+        // config.headers['Accept'] = 'application/json';
         config.timeout = 20000
         return config
     },

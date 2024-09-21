@@ -1,22 +1,43 @@
-import DetailsStory from "../../Components/DetailsStory/index.jsx";
 import Details from "../../Components/DetailsStory/story.jsx";
-import img from '../../assets/Screenshot.png'
+import React, {useContext, useEffect, useState} from "react";
+import {LoadingContext} from "../../Context";
+import { getStory} from "../../Service/api";
+import LoadingSpinner from "../../Components/Loading";
+import {useNavigate, useParams} from "react-router-dom";
+import {ErrorComponent} from "../../Components/Error";
 export default function FoodDetails(){
-    const Data = {
-        title: "Food Program 1",
-        author: "John Doe",
-        date: "September 13, 2024",
-        tags: ["React", "Microsoft", "JavaScript"],
-        content: (
-            <div>
-                <p>Microsoft has decided to move away from React for their internal projects...</p>
-                {/* Add more content here */}
-            </div>
-        ),
-        src:img
-    };
+    const [data, setData] = useState({})
+    const { isLoading, setLoading } = useContext(LoadingContext);
+    const [error, setError] = useState()
+
+    const {id} = useParams()
+    const getData = async () =>{
+        setLoading(true);
+
+        try{
+            const res = await getStory(id)
+            if(res.data){
+                setData(res.data?.data)
+            }
+
+        }catch (err) {
+            setError(err.message || err.response.message)
+        } finally {
+            setLoading(false);
+        }
+    }
+    const navigate = useNavigate();
+    useEffect(()=>{
+        if(id && id!='undefined') {
+            getData();
+        }else{
+            navigate('/food-programs')
+        }
+    },[])
+    if (isLoading) return <LoadingSpinner />;
+    if (error) return <ErrorComponent error={error}/>
 
     return(
-        <Details {...Data}/>
+        <Details {...data}/>
     )
 }
