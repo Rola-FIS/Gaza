@@ -1,9 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-import { ghPages } from 'vite-plugin-gh-pages';
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), ghPages()],
-  base: '/Gaza/', // Replace <your-repo-name> with the actual repository name
+  plugins: [react()],
+  base: '/Gaza/', // Replace with your repository name
 });
